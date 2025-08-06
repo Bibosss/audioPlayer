@@ -4,7 +4,7 @@ import type { IOptions } from "./interface";
 class Drawer {
   private buffer: AudioBuffer;
   private parent: HTMLElement;
-  private svgNode?: d3.Selection<SVGSVGElement, unknown, null, undefined>;
+  private svgNode?: d3.Selection<SVGSVGElement, undefined, null, undefined>;
   private xScale?: d3.ScaleLinear<number, number>;
   private onSeek?: (time: number) => void;
   private onSeekPreview?: (time: number) => void;
@@ -42,13 +42,13 @@ class Drawer {
 
     const yScale = d3
       .scaleLinear()
-      .domain(d3.extent(audioData))
+      .domain(d3.extent(audioData) as [number, number])
       .range([margin.top, height - margin.bottom]);
 
     const svg = d3
-      .create("svg")
-      .style("width", width)
-      .style("height", height)
+      .create<SVGSVGElement>("svg")
+      .style("width", `${width}px`)
+      .style("height", `${height}px`)
       .style("display", "block")
       .style("background", "#1f2937")
       .style("filter", "drop-shadow(0 0 6px rgba(59, 130, 246, 0.3))");
@@ -71,18 +71,18 @@ class Drawer {
     const g = svg.append("g").attr("transform", `translate(0, ${height / 2})`);
     const band = (width - margin.left - margin.right) / audioData.length;
 
-    g.selectAll("rect")
+    g.selectAll<SVGRectElement, number>("rect")
       .data(audioData)
       .join("rect")
       .attr("fill", "url(#waveGradient)")
-      .attr("height", (d) => yScale(d))
+      .attr("height", (d: number) => yScale(d))
       .attr("width", () => band * padding)
-      .attr("x", (_, i) => this.xScale!(i))
-      .attr("y", (d) => -yScale(d) / 2)
+      .attr("x", (_: number, i: number) => this.xScale!(i))
+      .attr("y", (d: number) => -yScale(d) / 2)
       .attr("rx", band / 1.5)
       .attr("ry", band / 1.5);
 
-    const cursorGroup = svg.append("g").attr("id", "cursorGroup");
+    const cursorGroup = svg.append<SVGGElement>("g").attr("id", "cursorGroup");
 
     cursorGroup
       .append("line")
@@ -100,22 +100,25 @@ class Drawer {
 
     cursorGroup.call(
       d3
-        .drag<SVGGElement, unknown>()
+        .drag<SVGGElement, undefined>()
         .on("start", () => {
           if (this.onSeekStart) this.onSeekStart();
         })
-        .on("drag", (event) => {
-          const x = Math.max(0, Math.min(width, event.x));
-          cursorGroup.attr("transform", `translate(${x},0)`);
+        .on(
+          "drag",
+          (event: d3.D3DragEvent<SVGGElement, undefined, unknown>) => {
+            const x = Math.max(0, Math.min(width, event.x));
+            cursorGroup.attr("transform", `translate(${x},0)`);
 
-          const progress = x / width;
-          const newTime = progress * this.buffer.duration;
+            const progress = x / width;
+            const newTime = progress * this.buffer.duration;
 
-          if (this.onSeekPreview) {
-            this.onSeekPreview(newTime);
+            if (this.onSeekPreview) {
+              this.onSeekPreview(newTime);
+            }
           }
-        })
-        .on("end", (event) => {
+        )
+        .on("end", (event: d3.D3DragEvent<SVGGElement, undefined, unknown>) => {
           const x = Math.max(0, Math.min(width, event.x));
           const progress = x / width;
           const newTime = progress * this.buffer.duration;
@@ -134,15 +137,17 @@ class Drawer {
     const rawData = this.buffer.getChannelData(0);
     const samples = this.buffer.sampleRate;
     const blockSize = Math.floor(rawData.length / samples);
-    const filteredData = [];
-    for (let i = 0; i < samples; i += 1) {
+    const filteredData: number[] = [];
+
+    for (let i = 0; i < samples; i++) {
       const blockStart = blockSize * i;
       let sum = 0;
-      for (let j = 0; j < blockSize; j += 1) {
+      for (let j = 0; j < blockSize; j++) {
         sum += Math.abs(rawData[blockStart + j]);
       }
       filteredData.push(sum / blockSize);
     }
+
     const multiplier = Math.max(...filteredData) ** -1;
     return filteredData.map((n) => n * multiplier);
   }
@@ -150,7 +155,7 @@ class Drawer {
   public init() {
     const audioData = this.clearData();
     const svg = this.generateWaveform(audioData, {});
-    this.parent.appendChild(svg.node() as Element);
+    this.parent.appendChild(svg.node() as SVGSVGElement);
   }
 
   public updateCursor(currentTime: number, duration: number) {

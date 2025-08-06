@@ -3,7 +3,7 @@ import { FaPlay, FaPause, FaStop, FaVolumeUp } from "react-icons/fa";
 import SoundDriver from "./SoundDriver";
 
 function Player() {
-  const soundController = useRef<SoundDriver>();
+  const soundController = useRef<SoundDriver | null>(null);
   const [loading, setLoading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [volume, setVolume] = useState(1);
@@ -53,11 +53,14 @@ function Player() {
     []
   );
 
-  const onVolumeChange = useCallback((event) => {
-    const newVolume = Number(event.target.value);
-    setVolume(newVolume);
-    soundController.current?.changeVolume(newVolume);
-  }, []);
+  const onVolumeChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newVolume = Number(event.target.value);
+      setVolume(newVolume);
+      soundController.current?.changeVolume(newVolume);
+    },
+    []
+  );
 
   return (
     <div style={{ width: "100%" }}>

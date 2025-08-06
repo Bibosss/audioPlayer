@@ -106,7 +106,7 @@ class SoundDriver {
     tick();
   }
 
-  public async pause(reset: boolean) {
+  public async pause(reset: boolean = false) {
     if (!this.isRunning) {
       this.pausedAt = reset ? 0 : this.pausedAt;
       return;

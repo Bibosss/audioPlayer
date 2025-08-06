@@ -1,0 +1,113 @@
+#controlPanel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #1f2937;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+#controlPanel button {
+  background-color: linear-gradient(145deg, #3b82f6, #2563eb);
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+#controlPanel button:hover {
+  background-color: linear-gradient(145deg, #60a5fa, #3b82f6);
+  transform: scale(1.1);
+  box-shadow: 0 6px 14px rgba(59, 130, 246, 0.6);
+}
+
+#controlPanel input[type="range"] {
+  accent-color: #3b82f6;
+  width: 120px;
+  height: 4px;
+  border-radius: 10px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropZone {
+  text-align: center;
+  border: 2px dashed #4b5563;
+  padding: 30px;
+  background-color: transparent;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #9ca3af;
+  transition: background 0.3s, color 0.3s;
+}
+
+.dropZone.dragOver {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.loading {
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.controlPanel {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: #1f2937;
+  padding: 12px 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.controlPanel button {
+  background-color: #3b82f6;
+  border: none;
+  color: white;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.controlPanel button:hover {
+  background-color: #2563eb;
+  transform: scale(1.05);
+}
+
+.volumeControl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+}
+
+.volumeControl input[type="range"] {
+  accent-color: #3b82f6;
+  width: 100px;
+}
